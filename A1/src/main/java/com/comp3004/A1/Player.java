@@ -2,10 +2,13 @@ package com.comp3004.A1;
 
 import java.util.ArrayList;
 
+import javafx.beans.property.SimpleIntegerProperty;
+
 public class Player {
 	// Variables
 	private int cards = 0;
 	private ArrayList<Card> Hand = new ArrayList<Card>();
+	private SimpleIntegerProperty value = new SimpleIntegerProperty(0);
 	
 	// Gets the players card count
 	public int getCardCount() {
@@ -74,7 +77,7 @@ public class Player {
 	public boolean isBusted() {
 		boolean bust = false;
 		
-		if (getScore() > 21) {
+		if (this.getScore() > 21) {
 			bust = true;
 		} else {
 			bust = false;
@@ -82,5 +85,10 @@ public class Player {
 		
 		return bust;
 	}
+	
+	public SimpleIntegerProperty scoreProperty() {
+		value.set(this.getScore());
+        return value;
+    }
 
 }
