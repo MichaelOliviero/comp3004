@@ -3,23 +3,18 @@ package com.comp3004.A1;
 import junit.framework.TestCase;
 import java.util.Random;
 
-public class PlayerTest extends TestCase {
+public class HandTest extends TestCase {
 	
 	// Test: Checks players default hand (empty) & card count
-	public void testDefaultHand() {
-		Player p1 = new Player();
-		
-		System.out.println("\n----- Checking empty hand -----");
-		System.out.println(p1.getHand());
+	public void testEmptyHand() {
+		Hand p1 = new Hand();
 		assertTrue(p1.getHand().isEmpty());
-		
-		System.out.println(p1.getCardCount());
 		assertEquals(0, p1.getCardCount());
 	}
 	
 	// Test: Check hitting (adding cards) & card count
 	public void testHit() {
-		Player p1 = new Player();
+		Hand p1 = new Hand();
 		Deck shuffledDeck = new Deck();
 		shuffledDeck.shuffleDeck();
 		
@@ -27,18 +22,15 @@ public class PlayerTest extends TestCase {
 		assertTrue(p1.getHand().isEmpty());
 		assertEquals(0, p1.getCardCount());
 		
-		System.out.println("\n----- Checking hand after hit with shuffled deck -----");
+		// Hand is no longer empty - has 1 random card in it
 		p1.Hit(shuffledDeck.nextCard());
-		System.out.println("Cards in the hand: " + p1.getCardCount());
-		System.out.println("Cards left in the deck: " + shuffledDeck.getCardCount());
-		System.out.println(p1.getHand().get(0).cardText());
 		assertFalse(p1.getHand().isEmpty());
 		assertEquals(1, p1.getCardCount());
 	}
 	
 	// Test: Check multiple hits (adding cards) & card count
 	public void testMultipleHits() {
-		Player p1 = new Player();
+		Hand p1 = new Hand();
 		Deck shuffledDeck = new Deck();
 		shuffledDeck.shuffleDeck();
 		Random rand = new Random();
@@ -48,17 +40,10 @@ public class PlayerTest extends TestCase {
 		assertTrue(p1.getHand().isEmpty());
 		assertEquals(0, p1.getCardCount());
 		
-		System.out.println("\n----- Checking hand after random amount of hits with shuffled deck -----");
+		// Hand is no longer empty - has random amount of cards in it
 		p1.Hit(shuffledDeck.nextCard());
 		for (int x = 0; x < randomNum; x++) {
 			p1.Hit(shuffledDeck.nextCard());
-		}
-		
-		System.out.println("Cards in the hand: " + p1.getCardCount());
-		System.out.println("Cards left in the deck: " + shuffledDeck.getCardCount());
-		
-		for (int y = 0; y < p1.getHand().size(); y++) {
-			System.out.println(p1.getHand().get(y).cardText());
 		}
 		
 		assertFalse(p1.getHand().isEmpty());
@@ -67,7 +52,7 @@ public class PlayerTest extends TestCase {
 	
 	// Test: Check Score of a random hand
 	public void testGetScore() {
-		Player p1 = new Player();
+		Hand p1 = new Hand();
 		Deck shuffledDeck = new Deck();
 		shuffledDeck.shuffleDeck();
 		Random rand = new Random();
@@ -77,22 +62,49 @@ public class PlayerTest extends TestCase {
 		assertTrue(p1.getHand().isEmpty());
 		assertEquals(0, p1.getCardCount());
 		
-		System.out.println("\n----- Checking score after random amount of hits with shuffled deck -----");
+		// Hand is no longer empty - has random amount of cards in it
 		p1.Hit(shuffledDeck.nextCard());
 		for (int x = 0; x < randomNum; x++) {
 			p1.Hit(shuffledDeck.nextCard());
 		}
 		
-		System.out.println("Cards in the hand: " + p1.getCardCount());
-		System.out.println("Cards left in the deck: " + shuffledDeck.getCardCount());
-		
-		for (int y = 0; y < p1.getHand().size(); y++) {
-			System.out.println(p1.getHand().get(y).cardText());
-		}
-		
-		System.out.println("\nTotal score of cards: " + p1.getScore());
-		
 		assertFalse(p1.getHand().isEmpty());
 		assertEquals(randomNum + 1, p1.getCardCount());
+	}
+	
+	// Test: Check dealersChoice function when <= 16
+	public void testDealersUnder16() {
+		// Give dealer a 16
+		Hand dealer1 = new Hand();
+		dealer1.Hit(new Card(0, 10)); // 10
+		dealer1.Hit(new Card(0, 5)); // 6
+		assertTrue(dealer1.dealersChoice()); // Dealer will hit
+		
+		// Give dealer a 14
+		Hand dealer2 = new Hand();
+		dealer2.Hit(new Card(0, 10)); // 10
+		dealer2.Hit(new Card(0, 3)); // 4
+		assertTrue(dealer2.dealersChoice()); // Dealer will hit
+		
+		// Give dealer a 12
+		Hand dealer3 = new Hand();
+		dealer3.Hit(new Card(0, 10)); // 10
+		dealer3.Hit(new Card(0, 1)); // 2
+		assertTrue(dealer3.dealersChoice()); // Dealer will hit
+		
+		// Give dealer a 6
+		Hand dealer4 = new Hand();
+		dealer4.Hit(new Card(0, 2));
+		dealer4.Hit(new Card(0, 2));
+		assertTrue(dealer4.dealersChoice()); // Dealer will hit
+	}
+
+	// Test: Check dealersChoice function when soft 17
+	public void testDealersSoft17() {
+		// Give dealer a soft 17
+		Hand dealer1 = new Hand();
+		dealer1.Hit(new Card(0, 5)); // 6
+		dealer1.Hit(new Card(0, 0)); // Ace
+		assertTrue(dealer1.dealersChoice()); // Dealer will hit
 	}
 }

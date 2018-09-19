@@ -15,8 +15,8 @@ public class Card {
 		this.value = value;
 	}
 	
-	// Constructor (if inputting string & int)
-	public Card (String suit, int value) {
+	// Constructor (if inputting 2 Strings)
+	public Card (String suit, String value) {
 		suit = suit.toUpperCase();
 		if (suit.equals("H")) {
 			this.suit = 0;
@@ -27,7 +27,19 @@ public class Card {
 		} else if (suit.equals("D")) {
 			this.suit = 3;
 		}
-		this.value = value;
+		
+		value = value.toUpperCase();
+		if (value.equals("A")) {
+			this.value = 0;
+		} else if (value.equals("J")) {
+			this.value = 11;
+		} else if (value.equals("Q")) {
+			this.value = 12;
+		} else if (value.equals("K")) {
+			this.value = 13;
+		} else {
+			this.value = Integer.parseInt(value)-1;
+		}
 	}
 	
 	// Gets the value of the card
@@ -45,6 +57,6 @@ public class Card {
 	
 	// Gets the suit and value of the card
 	public String cardText() {
-		return values[this.value] + " of " + suits[this.suit];
+		return "\t Card: " + values[this.value] + " of " + suits[this.suit];
 	}
 }

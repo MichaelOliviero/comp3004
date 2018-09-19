@@ -3,6 +3,7 @@ package com.comp3004.A1;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import javafx.application.Application;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -31,8 +32,8 @@ public class BlackjackMain extends Application {
 	
 	Stage window;
 	StringBuilder sb;
-	Dealer dealer;
-	Player player;
+	Hand dealer;
+	Hand player;
 	Deck deck;
 	
 	private SimpleBooleanProperty playable = new SimpleBooleanProperty(false);
@@ -42,18 +43,22 @@ public class BlackjackMain extends Application {
 	}
 	
 	public void endGame() {
-		playable.set(false);
-		
-		int dealerScore = dealer.getScore();
-		int playerScore = player.getScore();
-		
-        if (dealerScore == 21 || playerScore > 21 || dealerScore == playerScore || (dealerScore < 21 && dealerScore > playerScore)) {
-            System.out.println("Winner: Dealer");
-            return;
-        } else if (playerScore == 21 || dealerScore > 21 || playerScore > dealerScore) {
-            System.out.println("Winner: Player");
-            return;
-        }
+		if (playable.get()) {
+			String winner = null;
+			int dealerScore = this.dealer.getScore();
+			int playerScore = this.player.getScore();
+			
+	        if (dealerScore == 21 || playerScore > 21 || dealerScore == playerScore || (dealerScore < 21 && dealerScore > playerScore)) {
+	            winner = "Dealer ";
+	        } else if (playerScore == 21 || dealerScore > 21 || playerScore > dealerScore) {
+	        	winner = "Player ";
+	        }
+	        
+	        playable.set(false);
+	        print();
+	        System.out.println("-------------------------");
+	        System.out.println(winner + "wins!");
+		}
 	}
 	
 	public void print() {
@@ -64,15 +69,20 @@ public class BlackjackMain extends Application {
 		}System.out.println("Player's Score: " + player.getScore());
 		System.out.println("-------------------------");
 		System.out.println("Cards in dealer's hand:");
-		for (int i = 0; i < dealer.getCardCount(); i++) {
-			System.out.println(dealer.getCard(i).cardText());
-		}System.out.println("Dealer's Score: " + dealer.getScore());
-		System.out.println("-------------------------");
+		if (playable.get()) {
+			System.out.println("\t Card: -============-");
+			for (int i = 1; i < dealer.getCardCount(); i++) {
+				System.out.println(dealer.getCard(i).cardText());
+			}System.out.println("Dealer's Score: ?");
+		} else {
+			for (int i = 0; i < dealer.getCardCount(); i++) {
+				System.out.println(dealer.getCard(i).cardText());
+			}System.out.println("Dealer's Score: " + dealer.getScore());
+		}
 	}
 	
 	public void gameHandler() {
 		print();
-		
 		if (dealer.hasBlackjack()) {
 			endGame();
 		} else if (player.hasBlackjack() && !(dealer.hasBlackjack())) {
@@ -104,8 +114,8 @@ public class BlackjackMain extends Application {
 	public void startNewGame() {
 		playable.set(true);
 		
-		dealer = new Dealer();
-		player = new Player();
+		dealer = new Hand();
+		player = new Hand();
 		deck = new Deck();
 		
 		deck.shuffleDeck();
@@ -116,6 +126,18 @@ public class BlackjackMain extends Application {
 		dealer.Hit(deck.nextCard());
 		
 		gameHandler();
+	}
+	
+	public void continueGame(Hand dealer, Hand player) {
+		playable.set(true);
+		
+		this.player = player;
+		this.dealer = dealer;
+		deck = new Deck();
+		
+		deck.shuffleDeck();
+		
+		endGame();
 	}
 
 	@Override
@@ -148,7 +170,7 @@ public class BlackjackMain extends Application {
 		// New Game Menu Item
 		MenuItem newGame = new MenuItem("_New Game...");
 		newGame.setOnAction(e -> {
-			System.out.println("\n\n");
+			System.out.println("\n\n\n\n");
 			System.out.println("-------------------------");
 			System.out.println("Creating new game...");
 			startNewGame();
@@ -215,9 +237,18 @@ public class BlackjackMain extends Application {
 
         btnStand.setOnAction(e -> {
             while (dealer.dealersChoice()) {
+            	try {
+            		System.out.println("The Dealer is making a decision...");
+					TimeUnit.SECONDS.sleep(4);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
             	dealer.Hit(deck.nextCard());
+            	gameHandler();
             }
-            gameHandler();
+            if (!(dealer.dealersChoice())) {
+            	endGame();
+            }
         });
 		
         // Adding children
