@@ -9,6 +9,11 @@ public class Card {
 	private static final String[] suits = {"Hearts", "Spades", "Clubs", "Diamonds"};
 	private static final String[] values = {"Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"};
 	
+	// Constructor (if inputting 1 String)
+	public Card (String card) {
+		this(("" + card.charAt(0)), card.substring(1));
+	}
+	
 	// Constructor (if inputting 2 ints)
 	public Card (int suit, int value) {
 		this.suit = suit;

@@ -91,4 +91,29 @@ public class CardTest extends TestCase {
 		Card cardKing = new Card("H", "K");
 		assertEquals(10, cardKing.cardValue());
 	}
+	
+	// Test: Check values of cards using the 2 String constructor
+	public void testCardValueSingleStringConstructor() {
+		
+		// Values: Ace (1 & 11), 2 to 10, Jack, Queen, King
+		Card cardSoloAce = new Card("HA");
+		assertEquals(11, cardSoloAce.cardValue());
+		
+		Hand player1 = new Hand();
+		player1.Hit(new Card("HA")); // Hit first Ace
+		player1.Hit(new Card("sA")); // Hit second Ace
+		assertEquals(12, player1.getScore()); // Score -> 11 + 1 = 12
+		
+		Hand player2 = new Hand();
+		player2.Hit(new Card("HA")); // Hit first Ace
+		player2.Hit(new Card("sA")); // Hit second Ace
+		player2.Hit(new Card("sk")); // Hit a King
+		assertEquals(12, player2.getScore()); // Score -> 10 + 1 + 1 = 12
+		
+		Card cardTwo = new Card("H2");
+		assertEquals(2, cardTwo.cardValue());
+		
+		Card cardTen = new Card("H10");
+		assertEquals(10, cardTen.cardValue());
+	}
 }

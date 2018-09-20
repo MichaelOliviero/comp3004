@@ -185,7 +185,7 @@ public class BlackjackMain extends Application {
 			
 			FileChooser fileChooser = new FileChooser();
 			// REMOVE LINE BELOW
-			fileChooser.setInitialDirectory(new File ("C:\\Users\\Micha\\git\\comp3004\\A1"));
+			//fileChooser.setInitialDirectory(new File ("C:\\Users\\Micha\\git\\comp3004\\A1"));
 			// REMOVE LINE ABOVE
 			fileChooser.getExtensionFilters().addAll(new ExtensionFilter(".txt File", "*.txt"));
 			File file = fileChooser.showOpenDialog(null);
@@ -207,6 +207,7 @@ public class BlackjackMain extends Application {
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
 				}
+				
 			} else {
 				System.out.println("Invalid file.");
 			}
